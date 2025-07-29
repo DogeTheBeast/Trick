@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import org.teavm.jso.JSExport;
 
 /*Main Class
  * Runs source code files, and line by line inputs, holds the main method to run
@@ -17,14 +18,16 @@ public class Trick{
     static boolean hadRuntimeError = false;
 
     public static void main(String[] args) throws IOException{
-        if(args.length > 1){
-            System.out.println("Usage: trick [script]");
-            System.exit(64);
-        } else if (args.length == 1){
-            runFile(args[0]);
-        } else {
-            runPrompt();
-        }
+	System.out.println("Thanks for using Trick");
+	runPrompt();
+        // if(args.length > 1){
+        //     System.out.println("Usage: trick [script]");
+        //     System.exit(64);
+        // } else if (args.length == 1){
+        //     runFile(args[0]);
+        // } else {
+        //     runPrompt();
+        // }
     }
 
     /*Runs a source code file to interpret
@@ -62,7 +65,8 @@ public class Trick{
      * @param: source code
      * @return: none
      */
-    private static void run(String source){
+    @JSExport
+    public static void run(String source){
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 

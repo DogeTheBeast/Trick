@@ -9,6 +9,7 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+    id("org.teavm") version "0.12.3"
 }
 
 repositories {
@@ -22,12 +23,27 @@ dependencies {
 
     // This dependency is used by the application.
     implementation("com.google.guava:guava:31.1-jre")
+
+    // This dependency is used by TeaVM
+    // implementation("teavm.libs.jsoApis")
 }
 
-application {
-    // Define the main class for the application.
-    mainClass.set("craftinginterpreters.App")
+teavm {
+    all {
+	mainClass.set("craftinginterpreters.trick.Trick")
+    }
+    js {
+	addedToWebApp.set(true)
+
+        // this is also optional, default value is <project name>.js
+        targetFileName.set("example.js")
+    }
 }
+
+// application {
+//     // Define the main class for the application.
+//     mainClass.set("craftinginterpreters.trick.Trick")
+// }
 
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
