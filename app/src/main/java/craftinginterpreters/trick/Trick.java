@@ -79,6 +79,9 @@ public class Trick{
         //stop all parsing if error occurs for now
         if(hadError) return;
 
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(statements);
+
         //this is where the API from Interpreter is implemented
         interpreter.interpret(statements);
 
