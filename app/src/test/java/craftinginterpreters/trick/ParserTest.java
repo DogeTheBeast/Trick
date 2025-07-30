@@ -8,39 +8,19 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.text.ParseException;
 
 
 /*
  * Types of testing
- * -    != equality
- * -    > comaprison
- * -    - negative term
- * -    * factor
- * -    + addition
- * -    TRUE
- * -    Number
- * -    () brackets
- * -    ( bracket
- * -    Expect Expression (-)
- * -    Variable (Uninitialised and initialised)
- * -    for statement - NOT TESTS ALSO ERROR TESTING REQUIRED
- * -    if statement
- * -    with and without else statement
- * -    print statement
- * -    while statement - NOT TESTED
- * -    Block statement
- * -    Variable assignment
- * -    "Invalid assignment target"
- * -    Primary variable
- * -    Expect ';' after loop condition
+ * -    Synchonisation test
+ * 
+ * -    Expect ';' after loop condition.
  * -    Expect ')' after for clauses.
- * -    Expect '}' after block.
- * -    Expect '(' after 'while'.
- * -    Expect ')' after while condition.
- * -    Expect '(' after 'if'.
- * -    Expect ')' after if condition.
- * -    "Expect variable name."
- * -    "Expect ';' after variable declaration"
+ *  
+ * -    OR test
+ * -    AND test
+ * -    "Invalid assignment target"
  * -    Parse error
  */
 
@@ -132,20 +112,6 @@ class ParserTest {
     }
 
     @Test
-    public void validIfStatement() {
-        List<Stmt> statements = parseExpression("if(5 == 5) hello = 1;");
-        String astBuilder = new ASTprinter().print(statements);
-        Assertions.assertEquals("(IF (== 5.0 5.0) (hello 1.0) )",astBuilder);
-    }
-
-    @Test
-    public void validIfElseStatement() {
-        List<Stmt> statements = parseExpression("if(5 == 5) hello = 1; else hello = 2;");
-        String astBuilder = new ASTprinter().print(statements);
-        Assertions.assertEquals("(IF (== 5.0 5.0) (hello 1.0) (hello 2.0))",astBuilder);
-    }
-
-    @Test
     public void validPrint() {
         List<Stmt> statements = parseExpression("print \"Hello world\";");
         String astBuilder = new ASTprinter().print(statements);
@@ -180,20 +146,114 @@ class ParserTest {
         Assertions.assertEquals("(hello world)",astBuilder);
     }
 
-    // TODO : FIX THESE TESTS
-    // @Test
-    // public void invalidGrouping() {
-    //     List<Stmt> statements = parseExpression("10 * (6 + 5;");
-    //     new ASTprinter().print(statements);
-    //     Assertions.assertEquals("[line 1] Error at end:Expect ')' after expression.", outputStreamCaptor.toString().trim());
-    // }
+    @Test
+    public void invalidGrouping() {
+        parseExpression("10 * (6 + 5;");
+        String expectedString = "[line 1] Error at ';':Expect ')' after expression.";
+        Assertions.assertEquals(expectedString, outputStreamCaptor.toString().trim());
+    }
 
-    // @Test
-    // public void invalidTerm() {
-    //     List<Stmt> statements = parseExpression("-;");
-    //     new ASTprinter().print(statements);
-    //     Assertions.assertEquals("[line 1] Error at end:Expect expression.", outputStreamCaptor.toString().trim());
-    // }
+    @Test
+    public void invalidTerm() {
+        parseExpression("-;");
+        Assertions.assertEquals("[line 1] Error at ';':Expect expression.", outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    public void invalidVariableNameExpected() {
+        parseExpression("var;");
+        Assertions.assertEquals("[line 1] Error at ';':Expect variable name.",outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    public void invalidVariableMissingSemicolon() {
+        parseExpression("var hello");
+        Assertions.assertEquals("[line 1] Error at end:Expect ';' after variable declaration.",outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    public void validForStatement() {
+        List<Stmt> statements = parseExpression("for(var i = 0;i<5;i = i + 1) {print i;}");
+        String astOutput = new ASTprinter().print(statements);
+        String expectedString = "(BLOCK (i 0.0) (WHILE (< i 5.0) (BLOCK (BLOCK (PRINT i)) (i (+ i 1.0)))))";
+        Assertions.assertEquals(expectedString, astOutput);
+    }
+
+    @Test
+    public void validForStatementNoInitialisationAndConditionAndIncrement() {
+        List<Stmt> statements = parseExpression("for(;;) {print i;}");
+        String astOutput = new ASTprinter().print(statements);
+        String expectedString = "(WHILE true (BLOCK (PRINT i)))";
+        Assertions.assertEquals(expectedString, astOutput);
+    }
+    
+    //Not sure if this is correct
+    @Test
+    public void validForStatementWithExpression() {
+        List<Stmt> statements = parseExpression("for(1+2;i<5;i = i + 1) {print i;}");
+        String astOutput = new ASTprinter().print(statements);
+        String expectedString = "(BLOCK (+ 1.0 2.0) (WHILE (< i 5.0) (BLOCK (BLOCK (PRINT i)) (i (+ i 1.0)))))";
+        Assertions.assertEquals(expectedString, astOutput);
+    }
+
+    //Too many domino errors
+    @Test
+    public void invalidForStatementOpeningBrac() {
+        parseExpression("for 1+2;i<5;i = i + 1) {print i;}");
+        String expectedString = "[line 1] Error at '1':Expect '(' after 'for'.\n[line 1] Error at ')':Expect ';' after expression.\n[line 1] Error at '}':Expect expression.";
+        Assertions.assertEquals(expectedString, outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    public void validIfStatement() {
+        List<Stmt> statements = parseExpression("if(5 == 5) hello = 1;");
+        String astBuilder = new ASTprinter().print(statements);
+        Assertions.assertEquals("(IF (== 5.0 5.0) (hello 1.0) )",astBuilder);
+    }
+
+    @Test
+    public void validIfElseStatement() {
+        List<Stmt> statements = parseExpression("if(5 == 5) hello = 1; else hello = 2;");
+        String astBuilder = new ASTprinter().print(statements);
+        Assertions.assertEquals("(IF (== 5.0 5.0) (hello 1.0) (hello 2.0))",astBuilder);
+    }
+
+    @Test
+    public void invalidIfStatementOpenBrac() {
+        parseExpression("if 5==5) hello = world;");
+        String expectedString = "[line 1] Error at '5':Expect '(' after 'if'.";
+        Assertions.assertEquals(expectedString, outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    public void invalidIfStatementCloseBrac() {
+        parseExpression("if (5==5 hello = world;");
+        String expectedString = "[line 1] Error at 'hello':Expect ')' after if condition.";
+        Assertions.assertEquals(expectedString, outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    public void validWhileStatement() {
+        List<Stmt> statements = parseExpression("while(i<5) {print \"hi\";}");
+        String astString = new ASTprinter().print(statements);
+        String expectedString = "(WHILE (< i 5.0) (BLOCK (PRINT hi)))";
+        Assertions.assertEquals(expectedString, astString);
+    }
+
+    @Test
+    public void invalidWhileStatementOpenBrac() {
+        parseExpression("while i<5) {print \"hi\";}");
+        String expectedString = "[line 1] Error at 'i':Expect '(' after 'while'.\n[line 1] Error at '}':Expect expression.";
+        Assertions.assertEquals(expectedString, outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    public void invalidWhileStatementCloseBrac() {
+        parseExpression("while(i<5 {print \"hi\";}");
+        String expectedString = "[line 1] Error at '{':Expect ')' after condition.\n[line 1] Error at '}':Expect expression.";
+        Assertions.assertEquals(expectedString, outputStreamCaptor.toString().trim());
+    }
+
 
     //FOR NOW: We can only test +-/* operations, later we will expand when compiler can handle more
     @Test

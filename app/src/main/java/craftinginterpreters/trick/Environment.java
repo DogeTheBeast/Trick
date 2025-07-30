@@ -53,4 +53,25 @@ public class Environment {
     void define(String name, Object value){
         values.put(name,value);
     }
+    /*Looks up the variable at the specific distance wanted - rather than blind walk up chain
+    * Note: this assumes resolver ensures the variable exists, hence a deep coupling
+    * with interpreter and resolver
+    * @param: distance between defined and call, name of the variable
+    * @return: object value of variable*/
+    Object getAt(int distance, String name){
+        return ancestor(distance).values.get(name);
+    }
+    /*Same as ^^ but for assigning vars
+    * @param: distance of environments, name of var, object val of var */
+    void assignAt(int distance, Token name, Object value){
+        ancestor(distance).values.put(name.lexeme,value);
+    }
+    Environment ancestor(int distance){
+        Environment environment = this;
+        for(int i = 0; i < distance; i++){
+            environment = environment.enclosing;
+        }
+
+        return environment;
+    }
 }

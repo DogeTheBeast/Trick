@@ -1,10 +1,35 @@
 package craftinginterpreters.trick;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
 
-    private Environment environment = new Environment();
+    final Environment globals = new Environment();
+    private Environment environment = globals;
+    private final Map<Expr, Integer> locals = new HashMap<>();
+
+
+    Interpreter() {
+        globals.define("clock", new TrickCallable() {
+            
+            @Override
+            public int arity() { return 0; }
+            
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguements) {
+                return (double) System.currentTimeMillis()/1000.0;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fn.>";
+            }
+        });
+    }
+
 
     /*
      * Public API connecting the expression interaction of Interpreter, Expr,
@@ -31,6 +56,13 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
         stmt.accept(this);
     }
 
+    /*Stores var data, but the data needed for resolving stmts/expr
+    * @param: expression object of info, int distance between use and definition of data
+    * @return: none*/
+    void resolve(Expr expr, int depth){
+        locals.put(expr,depth);
+    }
+
     void executeBlock(List<Stmt> statements, Environment environment){
         Environment previous = this.environment;
         try{
@@ -43,6 +75,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
             this.environment = previous;
         }
     }
+
     private String stringify(Object object){
         if(object == null) return "nil";
 
@@ -65,7 +98,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
         return expr.accept(this);
     }
 
-    /*Determines if any expression is inherently true or false
+    /*
+     * Determines if any expression is inherently true or false
      * @param: object of analysis
      * @return: true/false
      */
@@ -87,6 +121,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
         //the equal method will satisfy our trick documentation
         return a.equals(b);
     }
+
     /*
      * Ensures the taken obejcts are actually number (Double) instances
      * @param: operator Token, and operand object(s)
@@ -115,6 +150,13 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
         return null;
     }
 
+    @Override
+    public Void visitReturnStmt(Stmt.Return stmt) {
+        Object value = null;
+        if(stmt.value != null) value = evaluate(stmt.value);
+        throw new Return(value);
+    }
+
     /*implements if else statement abstract interface execution
     * @param: Stmt.If object
     * @return: null*/
@@ -132,7 +174,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
      * Implements abstract Stmt interface, by evaluating expression or printing out the statment
      * as appropriate
      * @param: Expression subclass of Stmt object
-     * @return: none*/
+     * @return: none
+     */
     @Override
     public Void visitExpressionStmt(Stmt.Expression stmt){
         evaluate(stmt.expression);
@@ -177,6 +220,16 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
         return null;
     }
 
+    /*Sets up environment and calling reference to a function to be accessed
+    * @param: Function object of Stmt class
+    * @return: null*/
+    @Override
+    public Void visitFunctionStmt(Stmt.Function stmt){
+        TrickFunction function = new TrickFunction(stmt,environment);
+        environment.define(stmt.name.lexeme, function);
+        return null;
+    }
+
     /*Similar to variable initializer except no new var is defined, and we must assign
      * @param: Expr of the assign abstract subclass
      * @return: the object value of the var - check documentation on variables about this
@@ -184,7 +237,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
     @Override
     public Object visitAssignExpr(Expr.Assign expr){
         Object value = evaluate(expr.value);
-        environment.assign(expr.name, value);
+
+        Integer distance = locals.get(expr);
+        if(distance != null){
+            environment.assignAt(distance, expr.name, value);
+        } else {
+            globals.assign(expr.name, value);
+        }
+
         return value;
     }
 
@@ -194,7 +254,15 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
      */
     @Override
     public Object visitVariableExpr(Expr.Variable expr){
-        return environment.get(expr.name);
+        return lookUpVariable(expr.name,expr);
+    }
+    private Object lookUpVariable(Token name, Expr expr){
+        Integer distance = locals.get(expr);
+        if(distance != null){
+            return environment.getAt(distance, name.lexeme);
+        } else {
+            return globals.get(name);
+        }
     }
 
     /*evaluates literals by returning the value
@@ -248,6 +316,23 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
 
         //Unreachable for whatever reason - satisfying method return syntax
         return null;
+    }
+
+    @Override
+    public Object visitCallExpr(Expr.Call expr) {
+        Object callee = evaluate(expr.callee);
+        List<Object> arguements = new ArrayList<>();
+        for(Expr arguement: expr.arguements) {
+            arguements.add(evaluate(arguement));
+        }
+        if(!(callee instanceof TrickCallable)) {
+            throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+        }
+        TrickCallable function = (TrickCallable) callee;
+        if(arguements.size() != function.arity()) {
+            throw new RuntimeError(expr.paren, "Expected " + function.arity() + " arguements but got " + arguements.size() + ".");
+        }
+        return function.call(this,arguements);
     }
 
     @Override

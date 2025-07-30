@@ -103,6 +103,11 @@ class ASTprinter implements Expr.Visitor<String>, Stmt.Visitor<String>{
         return builder.toString();
     }
 
+    @Override
+    public String visitCallExpr(Expr.Call call) {
+        return "HI";
+    }
+
     private String parenthesize(String name, Expr... exprs) {
         StringBuilder builder = new StringBuilder();
         builder.append("(").append(name);
