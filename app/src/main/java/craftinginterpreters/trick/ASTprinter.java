@@ -108,6 +108,15 @@ class ASTprinter implements Expr.Visitor<String>, Stmt.Visitor<String>{
         return "HI";
     }
 
+    @Override
+    public String visitReturnStmt(Stmt.Return value) {
+	return "HI";
+    }
+
+    @Override
+    public String visitFunctionStmt(Stmt.Function func) {
+	return "HI";
+    }
     private String parenthesize(String name, Expr... exprs) {
         StringBuilder builder = new StringBuilder();
         builder.append("(").append(name);

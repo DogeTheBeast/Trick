@@ -20,9 +20,9 @@ public class Trick{
     public static void main(String[] args) throws IOException{
         if(args.length > 1){
             System.out.println("Usage: trick [script]");
-            System.exit(64);
-        } else if (args.length == 1){
-            runFile(args[0]);
+            // System.exit(64);
+        // } else if (args.length == 1){
+        //     runFile(args[0]);
         } else {
             runPrompt();
         }
@@ -37,8 +37,8 @@ public class Trick{
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes,Charset.defaultCharset()));
 
-        if(hadError) System.exit(65);
-        if(hadRuntimeError) System.exit(70);
+        // if(hadError) System.exit(65);
+        // if(hadRuntimeError) System.exit(70);
     }
 
     /*Runs code interpretation line by line
