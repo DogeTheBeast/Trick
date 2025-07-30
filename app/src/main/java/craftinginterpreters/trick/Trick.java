@@ -18,16 +18,14 @@ public class Trick{
     static boolean hadRuntimeError = false;
 
     public static void main(String[] args) throws IOException{
-	System.out.println("Thanks for using Trick");
-	runPrompt();
-        // if(args.length > 1){
-        //     System.out.println("Usage: trick [script]");
-        //     System.exit(64);
-        // } else if (args.length == 1){
-        //     runFile(args[0]);
-        // } else {
-        //     runPrompt();
-        // }
+        if(args.length > 1){
+            System.out.println("Usage: trick [script]");
+            System.exit(64);
+        } else if (args.length == 1){
+            runFile(args[0]);
+        } else {
+            runPrompt();
+        }
     }
 
     /*Runs a source code file to interpret
