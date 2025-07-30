@@ -1,36 +1,11 @@
 <html>
 	<head>
 		<title>Something</title>
-		<script src="./app.js"></script>
+		<link rel="stylesheet" href="./terminal.css">
 	</head>
 	<body>
-		<textarea id="code" placeholder="Type your code here..."></textarea>
-  		<br>
-  		<button onclick="runCode()">Run</button>
-
-  		<h2>Output:</h2>
-  		<p id="output">[Waiting for input]</p>
-        <script>
-          const originalLog = console.log;
-          const outputBox = document.getElementById('output');
-          console.info = function(...args) {
-            originalLog.apply(console, args);
-            const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
-            outputBox.textContent += message + '\n';
-          };
-          function runCode() {
-            const input = document.getElementById('code').value;
-            const output = document.getElementById('output');
-            if(outputBox.textContent == "[Waiting for input]"){
-              outputBox.textContent=""
-            }
-            try {
-              const result = run(input);  // You'll define this in Java
-              // output.textContent = result;
-            } catch (e) {
-              output.textContent = '[Error]\n' + e.message;
-            }
-          }
-        </script>
+		<div id="terminal"></div>
+		<script src="./app.js"></script>
+		<script src="./terminal.js"></script>
 	</body>
 </html>
