@@ -1,137 +1,195 @@
-# Java-Compiler-DomainSpecific
+<a id="readme-top"></a>
 
-This is a Java compiler, called **Trick**, built to understand how compilers are built and with added functionality we deemed would improve the language.
-
-Programming Language Developed: Trick - a domain specific version of Java
-
-## Credits
-
-Please note this language is built upon following the following source very closely and the credit for the basics functionality and design of the compiler goes to this source:
-
-[Crafting Interpreters](https://craftinginterpreters.com/)
-
-## Trick Language Documentation:
-[Notion Page](https://www.notion.so/Java-Project-028727268099418687937b8b32efb279?pvs=4)
-<div></div>
-While most of the language follows conventional Java implementation there are notable differences
-
-###   REPL Session Notes
-
-If you wish to end your REPL session, enter "/0" in a line on its
-and it will end the session.
-
-### Type conversion
-
-| Trick type     | Java Representation |
-| -------------- | ------------------- |
-| Any Lox value  | Object              |
-| nil            | null                |
-| Boolean        | Boolean             |
-| Number         | Double              |
-| String         | String              |
-| Char           | Char                |
-
-## Language Grammar
-
-Statement:
-
-program         → declaration* EOF ;  
-declaration     → varDecl | statement ;  
-varDecl         → "var" IDENTIFIER ( "=" expression ) ? ";" ;  
-statement       → exprStmt | printStmt | block;  
-exprStmt        → expression ";" ;  
-printStmt       → "print" expression ";" ;  
-block           → "{" declaration* "}" ;  
-
-Expression:  
-
-expression      → assignment;  
-assignment      → ( IDENTIFIER "=" assignment ) | equality ;   
-equality        → comparison ( ( "!=" | "==" ) comparison )* ;  
-comparison      → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;  
-term            → factor ( ( "-" | "+" ) factor )* ;  
-factor          → unary ( ( "/" | "*" ) )* ;  
-unary           → ( "!" | "-" ) unary | primary ;  
-primary         → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER;  
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![Unlicense License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
-### Variable Declaration
-Variables of any time are declared using "var" keyword operations can be used within declaration: i.e var result = 1 + 1
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/dogethebeast/Trick/">
+    <img src="webpage/logo.jpg" alt="Logo" width="100" height="100">
+  </a>
 
-### Expressions
-#### If-Else Expressions
-      instead of && / || we will use keywords 'and' / 'or'
-      due to the below section we can even use this for statments like below
-i.e 
-<div>
-print "hi" or 2; // "hi". 
+  <h3 align="center">Trick</h3>
+
+  <p align="center">
+    A custom OOP language compiler written in Java
+    <br />
+    <br />
+    <a href="https://dogethebeast.github.io/Trick/">View Demo</a>
+    <!-- &middot; -->
+    <!-- <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a> -->
+    <!-- &middot; -->
+    <!-- <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a> -->
+  </p>
 </div>
 
-<div> 
-print nil or "yes" //"yes".
-</div>
 
-#### Truth?
-Any boolean false and nil value are considered false while all else is true
 
-#### String/Char Manipulation
-Arithemtic a + b also works to concatenate string and chars with any other string, char, or number to create a final string.
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
-### Number Literals
-When performing method calls on numbers, negation will not take precendence over the method i.e: print -123.abs(); --> -123
 
-### Numbers/Arithmetic
-All numbers are doubles
-Supports checking for equality/inequality. (=/!=) between any types - i.e check for 3 = three (Reals on ##Truth? logic)
 
-###   Statements
-####  If-Else Statements
-Else is always implicitly attached to latest if statment.
-<div> 
-e.g
-</div>
+<!-- ABOUT THE PROJECT -->
+## About The Project
 
-```java
-if(condition{} if(condition){} else{})
-```
-hence the else statement belongs to the second if condition
+We started this project because of our curiosity into compiler design and optimizations. 
 
-### Exit Codes
-65: Syntax error while scanning
-70: Computation error while running the interpreter 
+### Built With
 
----
+This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
-### HEAD NOTES FOR DEVELOPERS:
-- Any mention of "|*********|" indicates an area of improvement or advancement  needed for development
-- Any mention of "|&&&&&&&&&| indicates uncertainties or additions needed for basic functionality
-- Any mention of ?!?!?!?!?! indicates a new addition that needs to be tested
+* [![Java] [Java.java]] [Java-url]
+* [![Gradle] [Gradle.com]] [Gradle-url]
+* [![TeaVM] [TeaVM.com]] [TeaVM-url]
 
-### IDEAS FOR IMPLEMENTATION:
-- To quote Crafting Interpreters "Ideally, we would have an actual abstraction, some kind of “ErrorReporter” interface that gets passed to the scanner and parser so that we can swap out different reporting strategies." - may be an opportunity for AI to play a role
+<!-- GETTING STARTED -->
+## Getting Started
 
-## Planning
+This is an example of how you may give instructions on setting up your project locally.
+To get a local copy up and running follow these simple example steps.
 
-- [x] Chapter 4 (Youssef)
-- [x] Chapter 5 (Ratiq)
-- [x] Chapter 6 (Ratiq)
-- [x] Chapter 7 (Youssef)
-- [x] Chapter 8 (Youssef)
-- [x] Chapter 9 (Youssef)
-- [ ] Chapter 10 (Ratiq)
-- [ ] Chapter 11 (Youssef)
+### Prerequisites
 
-### Bonus functionality
+This is an example of how to list things you need to use the software and how to install them.
+* npm
+  ```sh
+  npm install npm@latest -g
+  ```
 
-- [x] Tokenize Chars
-- [x] Unknown characters blob should be reported as one entity rather than individual i.e "これ は　だいじょぶない"
-- [ ] Specific error reporting
+### Installation
 
-### Testing
+_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-- [x] Scanner
-- [ ] Parser
-- [ ] Interpreter
-- [ ] Error reporting
-- [ ] Blob reporting
+1. Get a free API Key at [https://example.com](https://example.com)
+2. Clone the repo
+   ```sh
+   git clone https://github.com/github_username/repo_name.git
+   ```
+3. Install NPM packages
+   ```sh
+   npm install
+   ```
+4. Enter your API in `config.js`
+   ```js
+   const API_KEY = 'ENTER YOUR API';
+   ```
+5. Change git remote url to avoid accidental pushes to base project
+   ```sh
+   git remote set-url origin github_username/repo_name
+   git remote -v # confirm the changes
+   ```
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+Before cloning, you can check out the compiler on your browser by visiting this [webpage](https://dogethebeast.github.io/Trick/).
+
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+
+
+<!-- ROADMAP -->
+## Roadmap
+
+- [x] Add Changelog
+- [x] Add back to top links
+- [ ] Add Additional Templates w/ Examples
+- [ ] Add "components" document to easily copy & paste sections of the readme
+- [ ] Multi-language Support
+    - [ ] Chinese
+    - [ ] Spanish
+
+See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<!-- CONTACT -->
+## Contact
+
+Ratiq Narwal - [@ratiqnarwal](https://www.linkedin.com/in/ratiq-narwal/) - ratiqnarwal@gmail.com
+
+Youssef Chaabani - [@youssefchaabani](https://www.linkedin.com/in/youssef-chaabani/) - ychaabani@gmail.com
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+Resources that were useful while building this project.
+
+* [Crafting Interpreters] (https://craftinginterpreters.com)
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
+[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
+[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
+[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/othneildrew
+[product-screenshot]: images/screenshot.png
+[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
+[Next-url]: https://nextjs.org/
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
+[Vue-url]: https://vuejs.org/
+[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
+[Angular-url]: https://angular.io/
+[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
+[Svelte-url]: https://svelte.dev/
+[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
+[Laravel-url]: https://laravel.com
+[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
+[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[JQuery-url]: https://jquery.com 
