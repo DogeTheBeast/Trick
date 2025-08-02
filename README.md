@@ -59,9 +59,9 @@ As engineers, programming languages always seemed like a sort of black box to us
 
 This project was built with the following frameworks:
 
-* [![Java] [Java.com]] [Java-url]
-* [![Gradle] [Gradle.com]] [Gradle-url]
-* [![TeaVM] [TeaVM.com]] [TeaVM-url]
+* Java
+* Gradle
+* TeaVM
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -170,6 +170,3 @@ Resources that were useful while building this project.
 <!-- [Bootstrap-url]: https://getbootstrap.com -->
 <!-- [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white -->
 <!-- [JQuery-url]: https://jquery.com  -->
-[Java.com]: https://img.shields.io/badge/Java-0769AD?style=for-the-badge&logo=java&logoColor=white
-[Java-url]: https://www.java.com/en/
-
