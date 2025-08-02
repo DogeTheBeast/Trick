@@ -9,8 +9,9 @@ function createInputLine() {
   prompt.className = "prompt";
   prompt.textContent = "> ";
 
-  const input = document.createElement("input");
+  const input = document.createElement("textarea");
   input.type = "text";
+  input.id = "input";
   input.autofocus = true;
 
   line.appendChild(prompt);
@@ -19,7 +20,7 @@ function createInputLine() {
   input.focus();
 
   input.addEventListener("keydown", async (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) {
       const command = input.value;
       line.innerHTML = `<span class="prompt">&gt; </span>${command}`;
 
@@ -29,6 +30,10 @@ function createInputLine() {
     }
   });
 }
+document.addEventListener('click', function () {
+  const input = document.getElementById("input");
+  input.focus();
+});
 
 function addOutput(text) {
   const output = document.createElement("div");
