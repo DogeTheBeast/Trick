@@ -119,8 +119,10 @@ fieldset select,
 fieldset textarea,
 fieldset label,
 fieldset button {
-  margin-top: calc(var(--line-height) * 0.5);
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
+  /* margin-top: calc(var(--line-height) * 0.5); */
+  /* width: 100%; */
 }
 
 label {
@@ -134,9 +136,13 @@ label input {
 input,
 textarea,
 select {
+  vertical-align: top;
+  width: 90vw;
+  height: 90vh;
   background: transparent;
   color: var(--foreground);
-  border: 1px solid var(--foreground);
+  /* border: 1px solid var(--foreground); */
+  border: 0px;
   border-radius: var(--radius);
   padding: 10px;
   font: inherit;
@@ -154,7 +160,7 @@ textarea:active,
 select:focus-visible,
 select:active {
   border-color: var(--accent);
-  outline: 1px solid var(--accent);
+  outline: 0px solid var(--accent);
   outline-offset: 2px;
 }
 
