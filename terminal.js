@@ -12,7 +12,9 @@ function createInputLine() {
   const input = document.createElement("textarea");
   input.type = "text";
   input.id = "input";
+  input.autocomplete = "off";
   input.autofocus = true;
+  input.value = "";
 
   line.appendChild(prompt);
   line.appendChild(input);
@@ -21,6 +23,7 @@ function createInputLine() {
 
   input.addEventListener("keydown", async (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
       const command = input.value;
       line.innerHTML = `<span class="prompt">&gt; </span>${command}`;
 
